@@ -1,0 +1,42 @@
+{
+    "name": "uRecorder",
+    "description": "Youtube audio recorder",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "icons": {
+        "128": "images/icon-128.png"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "js": ["scripts/youtube.js"],
+            "matches": [
+                "https://www.youtube.com/*"
+            ]
+        }
+    ],
+    "action": {
+        "default_icon": {
+            "128": "images/icon-128.png"
+        }
+    },
+    "permissions": [
+        "storage",
+        "activeTab",
+        "scripting",
+        "tabs"
+    ],
+    "host_permissions": [
+        "https://www.youtube.com/*"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["/images/*"],
+            "matches": [
+                "*://*/*"
+            ]
+        }
+    ]
+}
