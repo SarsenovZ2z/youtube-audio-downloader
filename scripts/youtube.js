@@ -23,12 +23,10 @@ class AudioDownloader {
         source.connect(audioCtx.destination);
         source.connect(dest);
 
-        this.recorder = new MediaRecorder(dest.stream);
+        this.recorder = new MediaRecorder(dest.stream, { mimeType: 'audio/webm' });
 
         this.recorder.ondataavailable = (e) => {
-            if (e.data && e.data.size > 0) {
-                this.chunks.push(e.data);
-            }
+            this.chunks.push(e.data);
         };
 
         this.recorder.onstop = () => {
@@ -228,22 +226,23 @@ window.addEventListener("load", (e) => {
     const upload = (chunks) => {
         console.log('uploading...');
         const nameEl = document.querySelector('h1.ytd-watch-metadata');
-        const fileName = nameEl ? nameEl.textContent.replace(/^\s+|\s+$/g, '') : 'video';
+        const filename = (nameEl ? nameEl.textContent.replace(/^\s+|\s+$/g, '') : 'video') + '.webm';
 
-        const blob = new Blob(chunks, { type: "audio/mp3" });
-        // const blobUrl = URL.createObjectURL(blob);
+        console.log(chunks[0].type);
+        const blob = new Blob(chunks, { type: chunks[0].type });
+        const file = new File([blob], filename, { type: 'audio/webm' });
 
         var formData = new FormData();
-        formData.append("file", blob);
-        formData.append("name", `${fileName}.mp3`);
+        formData.append("file", file, filename);
+        formData.append("name", filename);
         fetch("https://music.z2z.kz/upload.php", {
-           method: "POST",
-           body: formData,
+            method: "POST",
+            body: formData,
         })
-        .then((response) => response.text())
-        .then((responseText) => {
-           console.log(responseText);
-        });
+            .then((response) => response.text())
+            .then((responseText) => {
+                console.log(responseText);
+            });
     }
 
     console.log('creating downloader...');
