@@ -1,1 +1,1 @@
-# Qtransliter
+# Google chrome extension
