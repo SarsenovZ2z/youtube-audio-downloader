@@ -23,7 +23,7 @@ class AudioDownloader {
         source.connect(audioCtx.destination);
         source.connect(dest);
 
-        this.recorder = new MediaRecorder(dest.stream, { mimeType: 'audio/webm' });
+        this.recorder = new MediaRecorder(dest.stream);
 
         this.recorder.ondataavailable = (e) => {
             this.chunks.push(e.data);
@@ -212,12 +212,12 @@ window.addEventListener("load", (e) => {
         const nameEl = document.querySelector('h1.ytd-watch-metadata');
         const fileName = nameEl ? nameEl.textContent.replace(/^\s+|\s+$/g, '') : 'video';
 
-        const blob = new Blob(chunks, { type: "audio/mp3" });
+        const blob = new Blob(chunks, { type: 'audio/x-matroska' });
         const blobUrl = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = blobUrl;
-        a.download = fileName + '.mp3';
+        a.download = fileName + '.mka';// + chunks[0].type.split(';')[0].replace('audio/', '');
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -226,16 +226,15 @@ window.addEventListener("load", (e) => {
     const upload = (chunks) => {
         console.log('uploading...');
         const nameEl = document.querySelector('h1.ytd-watch-metadata');
-        const filename = (nameEl ? nameEl.textContent.replace(/^\s+|\s+$/g, '') : 'video') + '.webm';
+        const filename = (nameEl ? nameEl.textContent.replace(/^\s+|\s+$/g, '') : 'video') + '.webm';// + chunks[0].type.split(';')[0].replace('audio/', '');
 
         console.log(chunks[0].type);
         const blob = new Blob(chunks, { type: chunks[0].type });
-        const file = new File([blob], filename, { type: 'audio/webm' });
+        const file = new File([blob], filename, { type: chunks[0].type });
 
         var formData = new FormData();
         formData.append("file", file, filename);
-        formData.append("name", filename);
-        fetch("https://music.z2z.kz/upload.php", {
+        fetch("http://localhost:3000/api/audio/upload", {
             method: "POST",
             body: formData,
         })
