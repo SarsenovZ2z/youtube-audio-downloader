@@ -6,8 +6,8 @@ export default class RecorderController {
     private actionsWrapper: HTMLElement
     private recordButton: HTMLElement
 
-    constructor(video: HTMLVideoElement, actionsWrapper: HTMLElement) {
-        this.recorder = new YoutubeAudioRecorder(video)
+    constructor(recorder: YoutubeAudioRecorder, actionsWrapper: HTMLElement) {
+        this.recorder = recorder
         this.actionsWrapper = actionsWrapper
     }
 
@@ -23,13 +23,10 @@ export default class RecorderController {
 
     private handleRecordButtonClick(): void {
         if (this.recorder.isRecording) {
-            this.recorder.stop((chunks: Array<Blob>) => {
-                console.log(chunks)
-            })
+            this.recorder.stop()
 
             this.setButtonRecordText()
         } else {
-            this.recorder.init()
             this.recorder.start()
 
             this.setButtonDownloadText()

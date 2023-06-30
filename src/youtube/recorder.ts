@@ -5,11 +5,39 @@ export default class YoutubeAudioRecorder {
     private onFinished: Function = () => { }
     private chunks: Array<Blob> = []
 
-    constructor(el: HTMLVideoElement) {
+    constructor(el: HTMLVideoElement, onFinished: Function) {
         this.videoElement = el
+        this.onFinished = onFinished
     }
 
-    public init(): void {
+    public start(): void {
+        if (!this.recorder) {
+            this.init()
+        }
+
+        if (!this.isVideoPlaying) {
+            this.videoElement.play()
+        }
+
+        this.recorder.start()
+    }
+
+    public pause(): void {
+        this.recorder.pause()
+    }
+
+    public resume(): void {
+        this.recorder.resume()
+    }
+
+    public stop(): void {
+        this.recorder.requestData()
+        this.recorder.stop()
+
+        this.videoElement.pause()
+    }
+
+    private init(): void {
         const audioCtx = new AudioContext()
         const source = audioCtx.createMediaElementSource(this.videoElement)
 
@@ -26,33 +54,9 @@ export default class YoutubeAudioRecorder {
 
         this.recorder
             .onstop = (e) => {
-                this?.onFinished(this.chunks)
+                this.onFinished(this.chunks)
                 this.chunks = []
             }
-    }
-
-    public start(): void {
-        if (!this.isVideoPlaying) {
-            this.videoElement.play()
-        }
-        this.recorder.start()
-    }
-
-    public pause(): void {
-        this.recorder.pause()
-    }
-
-    public resume(): void {
-        this.recorder.resume()
-    }
-
-    public stop(fn: Function): void {
-        this.onFinished = fn
-
-        this.recorder.requestData()
-        this.recorder.stop()
-
-        this.videoElement.pause()
     }
 
     get isRecording(): boolean {
