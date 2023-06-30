@@ -1,0 +1,23 @@
+.urecord-btn {
+    min-height: 30px;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 5px;
+    padding: 3px 13px;
+    background-color: #2d2e30;
+    border: none;
+    border-radius: 18px;
+    font-size: 14px;
+    font-family: Arial;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+}
+
+.urecord-dot {
+    width: 7px;
+    height: 7px;
+    margin-right: 3px;
+    background-color: red;
+    border-radius: 50%;
+}

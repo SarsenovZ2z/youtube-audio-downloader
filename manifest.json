@@ -4,14 +4,19 @@
     "version": "1.0.0",
     "manifest_version": 3,
     "icons": {
-        "128": "images/icon-128.png"
+        "128": "assets/images/icon-128.png"
     },
     "background": {
-        "service_worker": "background.js"
+        "service_worker": "dist/background.js"
     },
     "content_scripts": [
         {
-            "js": ["scripts/youtube.js"],
+            "js": [
+                "dist/youtube.js"
+            ],
+            "css": [
+                "assets/styles/youtube.css"
+            ],
             "matches": [
                 "https://www.youtube.com/*"
             ]
@@ -19,7 +24,7 @@
     ],
     "action": {
         "default_icon": {
-            "128": "images/icon-128.png"
+            "128": "assets/images/icon-128.png"
         }
     },
     "permissions": [
@@ -33,7 +38,9 @@
     ],
     "web_accessible_resources": [
         {
-            "resources": ["/images/*"],
+            "resources": [
+                "/assets/images/*"
+            ],
             "matches": [
                 "*://*/*"
             ]
