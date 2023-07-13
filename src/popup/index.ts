@@ -1,25 +1,49 @@
-import Api from "../utils/api"
-
 const QRCode = require('qrcode')
 
-const authWrp: HTMLElement = document.querySelector('#auth-uid')
+const authInfo = document.querySelector('#auth-info')
+const qrWrp: HTMLElement = document.querySelector('#auth-uid')
 const refreshBtn: HTMLButtonElement = document.querySelector('#refresh')
 
-const api = new Api('http://localhost:3000/api')
+chrome.storage.local.get('access_token').then((data) => {
+    const textEl = document.createElement('b')
+    authInfo.appendChild(textEl)
+    if (typeof data.access_token == 'string') {
+        textEl.innerHTML = `Current AccessToken: ${data.access_token}`
+    } else {
+        textEl.innerHTML = `Not authenticated`
 
-refreshBtn.onclick = async (e) => {
-    const uid = await api.request('GET', '/auth/uid', {})
-        .then(res => res.json())
-        .then(res => res.uid)
+    }
+})
 
+
+const ws = new WebSocket('ws://localhost:8999')
+
+ws.onmessage = (msg) => {
+    const event = JSON.parse(msg.data)
+    if (event.type == 'uid') {
+        setUid(event.data)
+    } else if (event.type == 'token') {
+        setToken(event.data)
+    }
+}
+
+refreshBtn.onclick = async (_) => {
+    ws.send(JSON.stringify({ type: 'refresh' }))
+}
+
+const setUid = (uid: string) => {
     QRCode.toDataURL(uid, (err: any, url: string) => {
-        let img: HTMLImageElement | null = authWrp.querySelector('img')
+        let img: HTMLImageElement | null = qrWrp.querySelector('img')
         if (!img) {
             img = document.createElement('img')
-            authWrp.appendChild(img)
+            qrWrp.appendChild(img)
         }
 
         img.setAttribute('src', url)
     })
 }
 
+const setToken = (token: string) => {
+    console.log('AccessToken received')
+    chrome.storage.local.set({ 'access_token': token })
+}
