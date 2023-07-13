@@ -15,7 +15,7 @@ export default class Api {
     async request(method: string, path: string, data: any) {
         return fetch(`${this.baseUrl}${path}`, {
             method: method,
-            body: data,
+            ...(method != 'GET' && method != 'HEAD' && {body: data}),
             headers: new Headers({
                 ...(typeof this.accessToken == 'string' && {'Authorization': `Bearer ${this.accessToken}`}), 
             })
