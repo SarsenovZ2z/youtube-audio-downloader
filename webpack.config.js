@@ -5,6 +5,7 @@ module.exports = {
     entry: {
         "background": path.resolve(__dirname, "src/background/index.ts"),
         "youtube": path.resolve(__dirname, "src/youtube/index.ts"),
+        "popup": path.resolve(__dirname, "src/popup/index.ts")
     },
     module: {
         rules: [
